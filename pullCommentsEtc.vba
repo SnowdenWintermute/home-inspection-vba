@@ -16,7 +16,7 @@ Sub ProcessScriptTable()
              currentHeader = ocell.Range.Text
              headerHasBeenPrintedToDocument = False
             End If
-            If ocell.Range.Font.Color = 255 Or ocell.Range.Font.Color = 13391121 Then
+            If ocell.Range.Font.Color = 255 Or ocell.Range.Font.Color = 13395456 Then
             If InStr(lastCellText, "TRUE") > 0 Then
                 Debug.Print ocell.Range.Text
                 Debug.Print ocell.Range.Font.Color
