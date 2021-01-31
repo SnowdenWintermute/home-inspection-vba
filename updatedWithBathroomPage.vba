@@ -1,5 +1,3 @@
-
-
 Sub ProcessScriptTable()
 ' Normal Vars
   Dim oTbl As Table
@@ -63,8 +61,25 @@ Sub ProcessScriptTable()
             If ocell.Range.Font.Size = 24 Then
                 currentPage = ocell.Range.Text
                 ActiveDocument.Content.InsertAfter Text:="Page: " & currentPage
+                ' Electrical Page
+                If InStr(currentPage, "ELECTRICAL INSPECTION REPORT") > 0 Then
+                    Dim lastCheckedBox As Boolean
+                    For Each eRow In oTable.Rows
+                        For Each eCell In eRow.Cells
+                            If InStr(eCell.Range.Text, "TRUE") > 0 Then
+                                lastCheckedBox = True
+                            ElseIf InStr(eCell.Range.Text, "FALSE") > 0 Then
+                                lastCheckedBox = False
+                            End If
+                            If eCell.Range.Font.Size = 11 Then
+                                Debug.Print eCell.Range.Text
+                            End If
+                        Next
+                    Next
+                End If
+                
                 ' Bathroom Page
-                If InStr(currentPage, "BATHROOM INSPECTION REPORT") Then
+                If InStr(currentPage, "BATHROOM INSPECTION REPORT") > 0 Then
                     Dim currentBathroomHeader As String
                     Dim currentBathroomHeaderPrinted As Boolean
                     
@@ -123,23 +138,23 @@ Sub ProcessScriptTable()
                             End If
                             ' Comments
                             If bathroomCell.Range.Font.Size = 10 Then
-                                If currentRow = 57 Then
-                                    bathroomAComments = bathroomCell.Range.Text
+                                If currentRow = 57 And Len(bathroomCell.Range.Text) > 2 Then
+                                    bathroomAComments = bathroomAComments & bathroomCell.Range.Text
                                 End If
-                                If currentRow = 58 Then
-                                    bathroomBComments = bathroomCell.Range.Text
+                                If currentRow = 58 And Len(bathroomCell.Range.Text) > 2 Then
+                                    bathroomBComments = bathroomBComments & bathroomCell.Range.Text
                                 End If
-                                If currentRow = 59 Then
-                                    bathroomCComments = bathroomCell.Range.Text
+                                If currentRow = 59 And Len(bathroomCell.Range.Text) > 2 Then
+                                    bathroomCComments = bathroomCComments & bathroomCell.Range.Text
                                 End If
-                                If currentRow = 60 Then
-                                    bathroomDComments = bathroomCell.Range.Text
+                                If currentRow = 60 And Len(bathroomCell.Range.Text) > 2 Then
+                                    bathroomDComments = bathroomDComments & bathroomCell.Range.Text
                                 End If
-                                If currentRow = 61 Then
-                                    bathroomEComments = bathroomCell.Range.Text
+                                If currentRow = 61 And Len(bathroomCell.Range.Text) > 2 Then
+                                    bathroomEComments = bathroomEComments & bathroomCell.Range.Text
                                 End If
-                                If currentRow = 62 Then
-                                    bathroomFComments = bathroomCell.Range.Text
+                                If currentRow = 62 And Len(bathroomCell.Range.Text) > 2 Then
+                                    bathroomFComments = bathroomFComments & bathroomCell.Range.Text
                                 End If
                             End If
                             If bathroomCell.Range.Font.Size = 12 Then
@@ -160,11 +175,9 @@ Sub ProcessScriptTable()
                                         
                                     End If
                                     If currentRow < 27 And currentRow > 22 Then
-                                        Debug.Print "before: " & bathroomASink
                                         Dim newValue As String
                                         newValue = bathroomASink & bathroomRow.Cells(2).Range.Text
                                         bathroomASink = newValue
-                                        Debug.Print "after: " & bathroomASink
                                     End If
                                     If currentRow < 39 And currentRow > 31 Then
                                         bathroomAShower = bathroomAShower & bathroomRow.Cells(2).Range.Text
@@ -265,7 +278,7 @@ Sub ProcessScriptTable()
                         Next
                     Next
                     If Len(bathroomALoc) > 0 Then
-                        ActiveDocument.Content.InsertAfter Text:=bathroomALoc
+                        ActiveDocument.Content.InsertAfter Text:="LOCATION: " & bathroomALoc
                         If Len(bathroomAToilet) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="TOILET" & vbNewLine
                             ActiveDocument.Content.InsertAfter Text:=bathroomAToilet
@@ -292,18 +305,18 @@ Sub ProcessScriptTable()
                         End If
                     End If
                     If Len(bathroomBLoc) > 0 Then
-                        ActiveDocument.Content.InsertAfter Text:=bathroomBLoc
+                        ActiveDocument.Content.InsertAfter Text:="LOCATION: " & bathroomBLoc
                         If Len(bathroomBToilet) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="TOILET" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAToilet
+                            ActiveDocument.Content.InsertAfter Text:=bathroomBToilet
                         End If
                         If Len(bathroomBSink) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="SINK" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomASink
+                            ActiveDocument.Content.InsertAfter Text:=bathroomBSink
                         End If
                         If Len(bathroomBShower) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="SHOWER" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAShower
+                            ActiveDocument.Content.InsertAfter Text:=bathroomBShower
                         End If
                         If Len(bathroomBBathtub) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="BATHTUB" & vbNewLine
@@ -311,30 +324,30 @@ Sub ProcessScriptTable()
                         End If
                         If Len(bathroomBVentLight) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="VENT / LIGHT" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAVentLight
+                            ActiveDocument.Content.InsertAfter Text:=bathroomBVentLight
                         End If
                         If Len(bathroomBComments) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="COMMENTS" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAComments
+                            ActiveDocument.Content.InsertAfter Text:=bathroomBComments
                         End If
                     End If
                     If Len(bathroomCLoc) > 0 Then
-                        ActiveDocument.Content.InsertAfter Text:=bathroomCLoc
+                        ActiveDocument.Content.InsertAfter Text:="LOCATION: " & bathroomCLoc
                         If Len(bathroomCToilet) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="TOILET" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAToilet
+                            ActiveDocument.Content.InsertAfter Text:=bathroomCToilet
                         End If
                         If Len(bathroomCSink) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="SINK" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomASink
+                            ActiveDocument.Content.InsertAfter Text:=bathroomCSink
                         End If
                         If Len(bathroomCShower) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="SHOWER" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAShower
+                            ActiveDocument.Content.InsertAfter Text:=bathroomCShower
                         End If
                         If Len(bathroomCBathtub) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="BATHTUB" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomABathtub
+                            ActiveDocument.Content.InsertAfter Text:=bathroomCBathtub
                         End If
                         If Len(bathroomCVentLight) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="VENT / LIGHT" & vbNewLine
@@ -342,88 +355,88 @@ Sub ProcessScriptTable()
                         End If
                         If Len(bathroomCComments) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="COMMENTS" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAComments
+                            ActiveDocument.Content.InsertAfter Text:=bathroomCComments
                         End If
                     End If
                     If Len(bathroomDLoc) > 0 Then
-                        ActiveDocument.Content.InsertAfter Text:=bathroomDLoc
+                        ActiveDocument.Content.InsertAfter Text:="LOCATION: " & bathroomDLoc
                         If Len(bathroomDToilet) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="TOILET" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAToilet
+                            ActiveDocument.Content.InsertAfter Text:=bathroomDToilet
                         End If
                         If Len(bathroomDSink) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="SINK" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomASink
+                            ActiveDocument.Content.InsertAfter Text:=bathroomDSink
                         End If
                         If Len(bathroomDShower) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="SHOWER" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAShower
+                            ActiveDocument.Content.InsertAfter Text:=bathroomDShower
                         End If
                         If Len(bathroomDBathtub) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="BATHTUB" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomABathtub
+                            ActiveDocument.Content.InsertAfter Text:=bathroomDBathtub
                         End If
                         If Len(bathroomDVentLight) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="VENT / LIGHT" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAVentLight
+                            ActiveDocument.Content.InsertAfter Text:=bathroomDVentLight
                         End If
                         If Len(bathroomDComments) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="COMMENTS" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAComments
+                            ActiveDocument.Content.InsertAfter Text:=bathroomDComments
                         End If
                     End If
                     If Len(bathroomELoc) > 0 Then
-                        ActiveDocument.Content.InsertAfter Text:=bathroomELoc
+                        ActiveDocument.Content.InsertAfter Text:="LOCATION: " & bathroomELoc
                         If Len(bathroomEToilet) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="TOILET" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAToilet
+                            ActiveDocument.Content.InsertAfter Text:=bathroomEToilet
                         End If
                         If Len(bathroomESink) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="SINK" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomASink
+                            ActiveDocument.Content.InsertAfter Text:=bathroomESink
                         End If
                         If Len(bathroomEShower) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="SHOWER" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAShower
+                            ActiveDocument.Content.InsertAfter Text:=bathroomEShower
                         End If
                         If Len(bathroomEBathtub) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="BATHTUB" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomABathtub
+                            ActiveDocument.Content.InsertAfter Text:=bathroomEBathtub
                         End If
                         If Len(bathroomEVentLight) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="VENT / LIGHT" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAVentLight
+                            ActiveDocument.Content.InsertAfter Text:=bathroomEVentLight
                         End If
                         If Len(bathroomEComments) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="COMMENTS" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAComments
+                            ActiveDocument.Content.InsertAfter Text:=bathroomEComments
                         End If
                     End If
                     If Len(bathroomFLoc) > 0 Then
-                        ActiveDocument.Content.InsertAfter Text:=bathroomFLoc
+                        ActiveDocument.Content.InsertAfter Text:="LOCATION: " & bathroomFLoc
                         If Len(bathroomFToilet) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="TOILET" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAToilet
+                            ActiveDocument.Content.InsertAfter Text:=bathroomFToilet
                         End If
                         If Len(bathroomFSink) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="SINK" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomASink
+                            ActiveDocument.Content.InsertAfter Text:=bathroomFSink
                         End If
                         If Len(bathroomFShower) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="SHOWER" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAShower
+                            ActiveDocument.Content.InsertAfter Text:=bathroomFShower
                         End If
                         If Len(bathroomFBathtub) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="BATHTUB" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomABathtub
+                            ActiveDocument.Content.InsertAfter Text:=bathroomFBathtub
                         End If
                         If Len(bathroomFVentLight) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="VENT / LIGHT" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAVentLight
+                            ActiveDocument.Content.InsertAfter Text:=bathroomFVentLight
                         End If
                         If Len(bathroomFComments) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="COMMENTS" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAComments
+                            ActiveDocument.Content.InsertAfter Text:=bathroomFComments
                         End If
                     End If
                 End If
@@ -443,7 +456,7 @@ Sub ProcessScriptTable()
             End If
          lastCellText = ocell.Range.Text
          End If
-         If ocell.Range.Font.Size = 10 Then
+         If ocell.Range.Font.Size = 10 And InStr(currentPage, "BATHROOM INSPECTION REPORT") = 0 Then
             If Len(ocell.Range.Text) > 3 Then
                     If Not InStr(ocell.Range.Text, "Comments:") > 0 Then
                         ActiveDocument.Content.InsertAfter Text:="Comment: " & ocell.Range.Text
