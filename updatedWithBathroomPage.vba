@@ -320,7 +320,7 @@ Sub ProcessScriptTable()
                         End If
                         If Len(bathroomBBathtub) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="BATHTUB" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomABathtub
+                            ActiveDocument.Content.InsertAfter Text:=bathroomBBathtub
                         End If
                         If Len(bathroomBVentLight) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="VENT / LIGHT" & vbNewLine
