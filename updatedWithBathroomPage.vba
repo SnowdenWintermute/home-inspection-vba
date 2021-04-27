@@ -351,7 +351,7 @@ Sub ProcessScriptTable()
                         End If
                         If Len(bathroomCVentLight) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="VENT / LIGHT" & vbNewLine
-                            ActiveDocument.Content.InsertAfter Text:=bathroomAVentLight
+                            ActiveDocument.Content.InsertAfter Text:=bathroomCVentLight
                         End If
                         If Len(bathroomCComments) > 0 Then
                             ActiveDocument.Content.InsertAfter Text:="COMMENTS" & vbNewLine
